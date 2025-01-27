@@ -8,3 +8,4 @@ axum = "0.7"
 tokio = { version = "1", features = ["full"] }
 askama = { version = "0", features = ["with-axum"] }
 askama_axum = "0.4"
+serde = { version = "1.0.217", features = ["derive"] }
