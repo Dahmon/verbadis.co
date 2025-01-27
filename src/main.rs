@@ -1,4 +1,13 @@
+use askama_axum::Template;
 use axum::{response::Html, routing::get, Router};
+
+#[derive(Template)]
+#[template(path = "root.html")]
+struct RootTemplate {}
+
+#[derive(Template)]
+#[template(path = "train.html")]
+struct TrainTemplate {}
 
 #[tokio::main]
 async fn main() {
@@ -12,13 +21,14 @@ async fn main() {
     axum::serve(listener, app).await.unwrap();
 }
 
-async fn root() -> Html<&'static str> {
-    Html("<h1>Word Training</h1><a href='/train'>Train</a>")
+async fn root() -> RootTemplate {
+    RootTemplate {}
 }
 
-async fn get_train() -> Html<&'static str> {
-    // Return training page
-    Html("<h1>Train!</h1><a href='/'>Home</a>")
+async fn get_train() -> TrainTemplate {
+    TrainTemplate {}
 }
 
-async fn post_train() {}
+async fn post_train() -> Html<&'static str> {
+    Html("")
+}
