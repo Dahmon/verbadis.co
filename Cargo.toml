@@ -4,10 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# askama_axum not compatible with 0.8 yet
 axum = "0.7"
 tokio = { version = "1", features = ["full"] }
 askama = { version = "0", features = ["with-axum"] }
 askama_axum = "0.4"
 serde = { version = "1.0.217", features = ["derive"] }
-sqlx = { version = "0.8.3", features = ["sqlite"] }
+sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio-native-tls"] }
 dotenv = "0.15.0"

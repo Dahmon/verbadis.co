@@ -12,6 +12,25 @@
   <button type="submit">Submit</button>
 </form> -->
 
+<form action="/words/new" method="post">
+  <label for="word">Word:</label>
+  <input id="word" name="word" type="text"></input>
+
+  <label for="class">Class:</label>
+  <select id="class" name="class">
+    <option value="noun">Noun</option>
+    <option value="verb">Verb</option>
+  </select>
+
+  <label for="def">Definition:</label>
+  <textarea id="def" name="definition"></textarea>
+
+  <label for="example">Example:</label>
+  <input id="example" name="example" type="text"></input>
+
+  <button type="submit">Create</button>
+</form>
+
 <section id="words">
   <dl id="words-list">
     {% for word in words %}
