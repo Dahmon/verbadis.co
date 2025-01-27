@@ -10,3 +10,4 @@ askama = { version = "0", features = ["with-axum"] }
 askama_axum = "0.4"
 serde = { version = "1.0.217", features = ["derive"] }
 sqlx = { version = "0.8.3", features = ["sqlite"] }
+dotenv = "0.15.0"
