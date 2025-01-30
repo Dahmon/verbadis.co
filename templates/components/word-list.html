@@ -1,0 +1,7 @@
+<dl id="words-list">
+  {% for word in words %}
+  <dt>{{ word.word }}</dt>
+  <dd>{{ word.class }}</dd>
+  <dd>{{ word.definition }}</dd>
+  {% endfor %}
+</dl>

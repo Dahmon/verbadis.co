@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 # askama_axum not compatible with 0.8 yet
-axum = "0.7"
+axum = { version = "0.7", features = ["macros"] }
 tokio = { version = "1", features = ["full"] }
 askama = { version = "0", features = ["with-axum"] }
 askama_axum = "0.4"

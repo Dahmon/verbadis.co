@@ -5,14 +5,13 @@
 {% block content %}
 <h1>All Words</h1>
 
-<!-- Search form
 <form hx-post="/words" hx-target="#words-list">
   <label for="search">Search:</label>
-  <input id="search" type="text" name="search" />
-  <button type="submit">Submit</button>
-</form> -->
+  <input id="search" type="text" name="search" value="{{ search }}" />
+  <button type="submit">Search</button>
+</form>
 
-<form action="/words/new" method="post">
+<form hx-post="/words/new" hx-target="#words-list" hx-swap="outerHTML">
   <label for="word">Word:</label>
   <input id="word" name="word" type="text"></input>
 
@@ -32,12 +31,6 @@
 </form>
 
 <section id="words">
-  <dl id="words-list">
-    {% for word in words %}
-    <dt>{{ word.word }}</dt>
-    <dd>{{ word.class }}</dd>
-    <dd>{{ word.definition }}</dd>
-    {% endfor %}
-  </dl>
+  {% include "components/word-list.html" %}
 </section>
 {% endblock %}
