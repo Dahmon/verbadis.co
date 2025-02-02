@@ -9,6 +9,7 @@ axum = { version = "0.7", features = ["macros"] }
 tokio = { version = "1", features = ["full"] }
 askama = { version = "0", features = ["with-axum"] }
 askama_axum = "0.4"
+tower-http = { version = "0.6", features = ["fs"] }
 serde = { version = "1.0.217", features = ["derive"] }
 sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio-native-tls"] }
 dotenv = "0.15.0"
