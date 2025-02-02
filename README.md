@@ -1,27 +1,15 @@
-# Word Thing
+# Disco Verba
+
+Disco Verba is a word training tool written in Rust.
+This project is mainly a tool for me to experiment with Rust and HTMX, but is
+also a tool I've wanted to build for a while.
+
+## Roadmap
+
+- [ ] Bunk importing of words
+- [ ] AI answer analysis
 
 ## TODO
 
-- [ ] Extract routes into own modules
+- [x] Extract routes into own modules
 - [ ] Write tests
-
-## Routing
-
-### GET Challenge
-
-- List of all previously completed challenges
-- Allow creating new challenge
-
-### GET challenge/new
-
-### GET Challenge/<challenge>
-
-- Provide a word, class, and definition
-- Allow entry of answer in a textbox
-- On submission, return output and display on page
-
-## Ideas
-
-- Implement SPA-like content only re-rendering
-- Session storage
-- Experiment with flashing to session

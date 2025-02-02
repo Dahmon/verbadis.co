@@ -1,11 +1,10 @@
 use crate::AppState;
 
-use askama_axum::{Response, Template};
+use askama_axum::Template;
 use axum::{
     debug_handler,
     extract::{Path, State},
     http::{HeaderMap, StatusCode},
-    response::Redirect,
     routing::{get, post},
     Form, Router,
 };
