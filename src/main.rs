@@ -1,4 +1,4 @@
-use std::{env, sync::Arc};
+use std::sync::Arc;
 
 use sqlx::{
     sqlite::{SqliteConnectOptions, SqlitePoolOptions},
