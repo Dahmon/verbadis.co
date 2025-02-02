@@ -11,7 +11,7 @@ use words::words_router;
 use crate::AppState;
 
 #[derive(Template)]
-#[template(path = "root.html")]
+#[template(path = "pages/root.html")]
 struct RootPageTemplate {}
 
 pub fn app_router(state: Arc<AppState>) -> axum::Router {
