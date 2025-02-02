@@ -5,6 +5,7 @@ use sqlx::{
     Pool, Sqlite,
 };
 
+mod models;
 mod router;
 
 struct AppState {

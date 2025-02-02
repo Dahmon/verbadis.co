@@ -1,0 +1,28 @@
+<table id="challenge-list">
+  <thead>
+    <tr>
+      <th>Word</th>
+      <th>Score</th>
+      <th>Created</th>
+      <th>Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for challenge in challenges %}
+    <tr>
+      <td>{{ challenge.word }}</td>
+      <td>
+      {% if let Some(score) = challenge.score %}
+        {{ score }}
+      {% endif %}
+      </td>
+      <td>{{ challenge.created_at }}</td>
+      <td>{{ challenge.updated_at }}</td>
+      <td>
+        <a href="/challenges/{{ challenge.id }}">View</a>
+        <button hx-delete="/challenges/{{ challenge.id }}" hx-target="#challenge-list" hx-swap="outerHTML">Delete</button>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>

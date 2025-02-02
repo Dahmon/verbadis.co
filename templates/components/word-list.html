@@ -3,5 +3,6 @@
   <dt>{{ word.word }}</dt>
   <dd>{{ word.class }}</dd>
   <dd>{{ word.definition }}</dd>
+  <button hx-delete="/words/{{ word.id }}" hx-target="#words-list" hx-swap="outerHTML">Delete</button>
   {% endfor %}
 </dl>

@@ -1,4 +1,9 @@
-use crate::AppState;
+use std::sync::Arc;
+
+use crate::{
+    models::{challenge::Challenge, word::WordRow},
+    AppState,
+};
 
 use askama_axum::Template;
 use axum::{
@@ -9,40 +14,18 @@ use axum::{
     Form, Router,
 };
 use serde::Deserialize;
-use sqlx::prelude::FromRow;
-use std::sync::Arc;
-
-use super::words::WordRow;
-
-#[derive(FromRow)]
-pub struct ChallengeRow {
-    pub id: u32,
-    pub word_id: u32,
-    pub answer: Option<String>,
-    pub corrected_answer: Option<String>,
-    pub score: Option<u8>,
-    pub created_at: String,
-    pub updated_at: String,
-}
-
-#[derive(FromRow)]
-struct Challenge {
-    id: u32,
-    word: String,
-    class: String,
-    definition: String,
-    answer: Option<String>,
-    corrected_answer: Option<String>,
-    score: Option<u8>,
-    created_at: String,
-    updated_at: String,
-}
 
 #[derive(Template)]
 #[template(path = "pages/challenges.html")]
 struct ChallengesPageTemplate {
     challenges: Vec<Challenge>,
     words: Vec<WordRow>,
+}
+
+#[derive(Template)]
+#[template(path = "components/challenge-list.html")]
+struct ChallengesListTemplate {
+    challenges: Vec<Challenge>,
 }
 
 #[derive(Template)]
@@ -57,15 +40,7 @@ struct NewChallengeForm {
 }
 
 async fn get_challenges(State(state): State<Arc<AppState>>) -> ChallengesPageTemplate {
-    let challenges: Vec<Challenge> = sqlx::query_as(
-        "SELECT words.word, words.class, words.definition, challenges.id, challenges.answer, challenges.corrected_answer, challenges.score, challenges.created_at, challenges.updated_at
-        FROM challenges
-        INNER JOIN words
-        ON challenges.word_id = words.id")
-        .fetch_all(&state.pool)
-        .await
-        .expect("Failed to get challenges");
-
+    let challenges: Vec<Challenge> = Challenge::query_all(&state).await;
     let words: Vec<WordRow> = sqlx::query_as("SELECT * FROM words")
         .fetch_all(&state.pool)
         .await
@@ -78,31 +53,18 @@ async fn get_challenge(
     State(state): State<Arc<AppState>>,
     Path(challenge_id): Path<String>,
 ) -> ChallengePageTemplate {
-    let challenge: Challenge = sqlx::query_as(
-        "SELECT words.word, words.class, words.definition, challenges.id, challenges.answer, challenges.corrected_answer, challenges.score, challenges.created_at, challenges.updated_at
-        FROM challenges
-        INNER JOIN words
-        ON challenges.word_id = words.id
-        WHERE challenges.id = $1")
-        .bind(&challenge_id)
-        .fetch_one(&state.pool)
-        .await
-        .expect("Failed to get challenge");
+    let challenge = Challenge::query(&state, &challenge_id).await;
 
     ChallengePageTemplate { challenge }
 }
+
 #[debug_handler]
 async fn post_new_challenge(
     State(state): State<Arc<AppState>>,
     Form(form): Form<NewChallengeForm>,
 ) -> (StatusCode, HeaderMap) {
-    let results = sqlx::query("INSERT INTO challenges (word_id) VALUES ($1);")
-        .bind(&form.word_id)
-        .execute(&state.pool)
-        .await
-        .expect("Failed to insert new challenge");
-
-    let redirect_url = format!("/challenges/{}", results.last_insert_rowid());
+    let row_id = Challenge::create(&state, &form.word_id).await;
+    let redirect_url = format!("/challenges/{}", row_id);
 
     let mut headers = HeaderMap::new();
     headers.insert("HX-Location", redirect_url.parse().unwrap());
@@ -110,9 +72,22 @@ async fn post_new_challenge(
     (StatusCode::CREATED, headers)
 }
 
+async fn delete_challenge(
+    State(state): State<Arc<AppState>>,
+    Path(challenge_id): Path<String>,
+) -> ChallengesListTemplate {
+    Challenge::delete(&state, &challenge_id).await;
+    let challenges = Challenge::query_all(&state).await;
+
+    ChallengesListTemplate { challenges }
+}
+
 pub fn challenges_router() -> Router<Arc<AppState>> {
     axum::Router::new()
         .route("/challenges", get(get_challenges))
-        .route("/challenges/:challenge_id", get(get_challenge))
+        .route(
+            "/challenges/:challenge_id",
+            get(get_challenge).delete(delete_challenge),
+        )
         .route("/challenges/new", post(post_new_challenge))
 }

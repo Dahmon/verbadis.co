@@ -7,11 +7,11 @@
 
 <form action="/words" method="GET" hx-target="#words-list" hx-push-url="true">
   <label for="search">Search:</label>
-  <input id="search" type="text" name="search" value="{{ search }}" />
+  <input id="search" type="text" name="search" value="{% if let Some(search) = search %}{{search}}{% endif %}" />
   <button type="submit">Search</button>
 </form>
 
-<form action="/words/new" method="POST" hx-target="#words-list" hx-swap="outerHTML">
+<form action="/words/new" method="POST" hx-target="#words-list" hx-swap="outerHTML" hx-push-url="false">
   <label for="word">Word:</label>
   <input id="word" name="word" type="text"></input>
 

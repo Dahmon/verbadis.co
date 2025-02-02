@@ -17,30 +17,6 @@
   </form>
 
   <section id="challenges">
-  <table id="challenge-list">
-    <thead>
-      <tr>
-        <th>Word</th>
-        <th>Score</th>
-        <th>Created</th>
-        <th>Updated</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for challenge in challenges %}
-      <tr>
-        <td>{{ challenge.word }}</td>
-        <td>
-        {% if let Some(score) = challenge.score %}
-          {{ score }}
-        {% endif %}
-        </td>
-        <td>{{ challenge.created_at }}</td>
-        <td>{{ challenge.updated_at }}</td>
-        <td><a href="/challenges/{{ challenge.id }}">View</a><a>Delete</a></td>
-      </tr>
-    {% endfor %}
-    </tbody>
-  </table>
+  {% include "components/challenge-list.html" %}
   </section>
 {% endblock %}

@@ -2,33 +2,17 @@ use std::sync::Arc;
 
 use askama_axum::{IntoResponse, Template};
 use axum::{
-    extract::{Query, Request, State},
-    routing::{get, post},
+    extract::{Path, Query, Request, State},
+    http::StatusCode,
+    routing::{delete, get, post},
     Form, Router,
 };
 use serde::Deserialize;
-use sqlx::prelude::FromRow;
 
-use crate::AppState;
-
-#[derive(FromRow)]
-pub struct WordRow {
-    pub id: u32,
-    pub word: String,
-    pub class: String,
-    pub definition: String,
-    pub example: Option<String>,
-    pub created_at: String,
-    pub updated_at: String,
-}
-
-#[derive(Deserialize)]
-struct NewWordForm {
-    word: String,
-    class: String,
-    definition: String,
-    example: String,
-}
+use crate::{
+    models::word::{NewWord, WordRow},
+    AppState,
+};
 
 #[derive(Deserialize)]
 struct SearchForm {
@@ -39,7 +23,7 @@ struct SearchForm {
 #[template(path = "pages/words.html")]
 struct WordsPageTemplate {
     words: Vec<WordRow>,
-    search: String,
+    search: Option<String>,
 }
 
 #[derive(Template)]
@@ -75,47 +59,40 @@ async fn get_words(
         .and_then(|value| value.to_str().ok())
         == Some("words-list");
 
-    let search: String = match &query.search {
-        Some(search) => search.clone(),
-        None => String::new(),
+    let words: Vec<WordRow> = match &query.search {
+        Some(search) => WordRow::query_all(&state, search).await,
+        None => WordRow::get_all(&state).await,
     };
 
-    let words: Vec<WordRow> =
-        sqlx::query_as("SELECT * FROM words WHERE word LIKE '%' || $1 || '%'")
-            .bind(&search)
-            .fetch_all(&state.pool)
-            .await
-            .expect("Failed to get words");
-
-    if is_search {
-        WordsTemplates::List(WordsListTemplate { words })
-    } else {
-        WordsTemplates::Page(WordsPageTemplate {
+    match is_search {
+        true => WordsTemplates::List(WordsListTemplate { words }),
+        false => WordsTemplates::Page(WordsPageTemplate {
             words,
-            search: search.clone(),
-        })
+            search: query.search,
+        }),
     }
 }
 
 async fn post_words_new(
     State(state): State<Arc<AppState>>,
-    Form(form): Form<NewWordForm>,
-) -> WordsListTemplate {
-    sqlx::query("INSERT INTO words (word, class, definition, example) VALUES ($1, $2, $3, $4);")
-        .bind(form.word)
-        .bind(form.class)
-        .bind(form.definition)
-        .bind(form.example)
-        .execute(&state.pool)
-        .await
-        .expect("Failed to insert new word");
+    Form(form): Form<NewWord>,
+) -> (StatusCode, WordsListTemplate) {
+    WordRow::create(&state, form).await;
+    let words: Vec<WordRow> = WordRow::get_all(&state).await;
 
     // TODO: Flash success/error message on session
 
-    let words: Vec<WordRow> = sqlx::query_as("SELECT * FROM words")
-        .fetch_all(&state.pool)
+    (StatusCode::CREATED, WordsListTemplate { words })
+}
+
+async fn delete_word(
+    State(state): State<Arc<AppState>>,
+    Path(word_id): Path<String>,
+) -> WordsListTemplate {
+    WordRow::delete(&state, &word_id.parse().unwrap())
         .await
-        .expect("Failed to get words");
+        .unwrap();
+    let words: Vec<WordRow> = WordRow::get_all(&state).await;
 
     WordsListTemplate { words }
 }
@@ -123,5 +100,6 @@ async fn post_words_new(
 pub fn words_router() -> Router<Arc<AppState>> {
     axum::Router::new()
         .route("/words", get(get_words))
+        .route("/words/:word_id", delete(delete_word))
         .route("/words/new", post(post_words_new))
 }
