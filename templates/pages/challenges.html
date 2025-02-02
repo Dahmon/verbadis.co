@@ -5,7 +5,7 @@
 {% block content %}
   <h1>Challenges</h1>
 
-  <form hx-post="/challenges/new">
+  <form action="/challenges/new" method="POST">
     <label for="word_id">Word:</label>
     <select id="word_id" name="word_id">
       {% for word in words %}

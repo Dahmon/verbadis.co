@@ -105,7 +105,7 @@ async fn post_new_challenge(
     let redirect_url = format!("/challenges/{}", results.last_insert_rowid());
 
     let mut headers = HeaderMap::new();
-    headers.insert("HX-Redirect", redirect_url.parse().unwrap());
+    headers.insert("HX-Location", redirect_url.parse().unwrap());
 
     (StatusCode::CREATED, headers)
 }

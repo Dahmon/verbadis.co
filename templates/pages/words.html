@@ -5,13 +5,13 @@
 {% block content %}
 <h1>All Words</h1>
 
-<form hx-get="/words" hx-target="#words-list" hx-push-url="true">
+<form action="/words" method="GET" hx-target="#words-list" hx-push-url="true">
   <label for="search">Search:</label>
   <input id="search" type="text" name="search" value="{{ search }}" />
   <button type="submit">Search</button>
 </form>
 
-<form hx-post="/words/new" hx-target="#words-list" hx-swap="outerHTML">
+<form action="/words/new" method="POST" hx-target="#words-list" hx-swap="outerHTML">
   <label for="word">Word:</label>
   <input id="word" name="word" type="text"></input>
 
