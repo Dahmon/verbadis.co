@@ -5,7 +5,7 @@
 {% block content %}
 <h1>All Words</h1>
 
-<form hx-post="/words" hx-target="#words-list">
+<form hx-get="/words" hx-target="#words-list" hx-push-url="true">
   <label for="search">Search:</label>
   <input id="search" type="text" name="search" value="{{ search }}" />
   <button type="submit">Search</button>

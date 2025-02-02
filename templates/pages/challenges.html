@@ -1,0 +1,34 @@
+{% extends "main.html" %}
+
+{% block title%}Train{% endblock %}
+
+{% block content %}
+  <h1>Challenges</h1>
+
+  <section id="challenges">
+  <table id="challenge-list">
+    <thead>
+      <tr>
+        <th>Word</th>
+        <th>Score</th>
+        <th>Created</th>
+        <th>Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for challenge in challenges %}
+      <tr>
+        <td>{{ challenge.word_id }}</td>
+        <td>
+        {% if let Some(score) = challenge.score %}
+          {{ score }}
+        {% endif %}
+        </td>
+        <td>{{ challenge.created_at }}</td>
+        <td>{{ challenge.updated_at }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  </section>
+{% endblock %}
