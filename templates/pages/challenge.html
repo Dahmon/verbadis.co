@@ -1,0 +1,22 @@
+{% extends "main.html" %}
+
+{% block title%}Challenge{% endblock %}
+
+{% block content %}
+  <h1>Challenge</h1>
+
+  <section id="challenge">
+    <dl id="definition">
+      <dt>{{ challenge.word }}</dt>
+      <dd>{{ challenge.class }}</dd>
+      <dd>{{ challenge.definition }}</dd>
+    </dl>
+
+    {% if let Some(answer) = challenge.answer %}
+      <p>{{ answer }}</p>
+    {% endif %}
+    {% if let Some(corrected) = challenge.corrected_answer %}
+      <p>{{ corrected }}</p>
+    {% endif %}
+  </section>
+{% endblock %}

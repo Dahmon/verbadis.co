@@ -15,7 +15,9 @@ use std::sync::Arc;
 #[derive(FromRow)]
 struct Challenge {
     id: u32,
-    word_id: u32,
+    word: String,
+    class: String,
+    definition: String,
     answer: Option<String>,
     corrected_answer: Option<String>,
     score: Option<u8>,
@@ -26,6 +28,7 @@ struct Challenge {
 #[derive(Template)]
 #[template(path = "pages/challenges.html")]
 struct ChallengesPageTemplate {
+    // words: ,
     challenges: Vec<Challenge>,
 }
 
@@ -40,15 +43,12 @@ struct NewChallengeForm {
     word_id: String,
 }
 
-pub fn challenges_router() -> Router<Arc<AppState>> {
-    axum::Router::new()
-        .route("/challenges", get(get_challenges))
-        .route("/challenges/{id}", get(get_challenge))
-        .route("/challenges/new", post(post_new_challenge))
-}
-
 async fn get_challenges(State(state): State<Arc<AppState>>) -> ChallengesPageTemplate {
-    let challenges: Vec<Challenge> = sqlx::query_as("SELECT * FROM challenges")
+    let challenges: Vec<Challenge> = sqlx::query_as(
+        "SELECT words.word, words.class, words.definition, challenges.id, challenges.answer, challenges.corrected_answer, challenges.score, challenges.created_at, challenges.updated_at
+        FROM challenges
+        INNER JOIN words
+        ON challenges.word_id = words.id")
         .fetch_all(&state.pool)
         .await
         .expect("Failed to get challenges");
@@ -60,7 +60,12 @@ async fn get_challenge(
     State(state): State<Arc<AppState>>,
     Path(challenge_id): Path<String>,
 ) -> ChallengePageTemplate {
-    let challenge: Challenge = sqlx::query_as("SELECT * FROM challenges WHERE id = $1")
+    let challenge: Challenge = sqlx::query_as(
+        "SELECT words.word, words.class, words.definition, challenges.id, challenges.answer, challenges.corrected_answer, challenges.score, challenges.created_at, challenges.updated_at
+        FROM challenges
+        INNER JOIN words
+        ON challenges.word_id = words.id
+        WHERE challenges.id = $1")
         .bind(&challenge_id)
         .fetch_one(&state.pool)
         .await
@@ -82,4 +87,11 @@ async fn post_new_challenge(
     let redirect_url = format!("/challenges/{}", results.last_insert_rowid());
 
     Redirect::to(&redirect_url)
+}
+
+pub fn challenges_router() -> Router<Arc<AppState>> {
+    axum::Router::new()
+        .route("/challenges", get(get_challenges))
+        .route("/challenges/:challenge_id", get(get_challenge))
+        .route("/challenges/new", post(post_new_challenge))
 }

@@ -63,12 +63,6 @@ impl IntoResponse for WordsTemplates {
     }
 }
 
-pub fn words_router() -> Router<Arc<AppState>> {
-    axum::Router::new()
-        .route("/words", get(get_words))
-        .route("/words/new", post(post_words_new))
-}
-
 #[axum::debug_handler]
 async fn get_words(
     State(state): State<Arc<AppState>>,
@@ -123,4 +117,10 @@ async fn post_words_new(
         .expect("Failed to get words");
 
     WordsListTemplate { words }
+}
+
+pub fn words_router() -> Router<Arc<AppState>> {
+    axum::Router::new()
+        .route("/words", get(get_words))
+        .route("/words/new", post(post_words_new))
 }

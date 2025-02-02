@@ -1,9 +1,19 @@
 {% extends "main.html" %}
 
-{% block title%}Train{% endblock %}
+{% block title%}Challenges{% endblock %}
 
 {% block content %}
   <h1>Challenges</h1>
+
+  <form hx-post="/challenges/new">
+    <label for="word_id">Word:</label>
+    <select id="word_id" name="word_id">
+      <option value="1">Hello</option>
+      <option value="2">Goodbye</option>
+    </select>
+
+    <button type="submit">Create</button>
+  </form>
 
   <section id="challenges">
   <table id="challenge-list">
@@ -18,7 +28,7 @@
     <tbody>
     {% for challenge in challenges %}
       <tr>
-        <td>{{ challenge.word_id }}</td>
+        <td>{{ challenge.word }}</td>
         <td>
         {% if let Some(score) = challenge.score %}
           {{ score }}
@@ -26,6 +36,7 @@
         </td>
         <td>{{ challenge.created_at }}</td>
         <td>{{ challenge.updated_at }}</td>
+        <td><a href="/challenges/{{ challenge.id }}">View</a><a>Delete</a></td>
       </tr>
     {% endfor %}
     </tbody>
