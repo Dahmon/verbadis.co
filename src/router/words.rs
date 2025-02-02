@@ -12,14 +12,14 @@ use sqlx::prelude::FromRow;
 use crate::AppState;
 
 #[derive(FromRow)]
-struct Word {
-    id: u32,
-    word: String,
-    class: String,
-    definition: String,
-    example: Option<String>,
-    created_at: String,
-    updated_at: String,
+pub struct WordRow {
+    pub id: u32,
+    pub word: String,
+    pub class: String,
+    pub definition: String,
+    pub example: Option<String>,
+    pub created_at: String,
+    pub updated_at: String,
 }
 
 #[derive(Deserialize)]
@@ -38,14 +38,14 @@ struct SearchForm {
 #[derive(Template)]
 #[template(path = "pages/words.html")]
 struct WordsPageTemplate {
-    words: Vec<Word>,
+    words: Vec<WordRow>,
     search: String,
 }
 
 #[derive(Template)]
 #[template(path = "components/word-list.html")]
 struct WordsListTemplate {
-    words: Vec<Word>,
+    words: Vec<WordRow>,
 }
 
 enum WordsTemplates {
@@ -80,11 +80,12 @@ async fn get_words(
         None => String::new(),
     };
 
-    let words: Vec<Word> = sqlx::query_as("SELECT * FROM words WHERE word LIKE '%' || $1 || '%'")
-        .bind(&search)
-        .fetch_all(&state.pool)
-        .await
-        .expect("Failed to get words");
+    let words: Vec<WordRow> =
+        sqlx::query_as("SELECT * FROM words WHERE word LIKE '%' || $1 || '%'")
+            .bind(&search)
+            .fetch_all(&state.pool)
+            .await
+            .expect("Failed to get words");
 
     if is_search {
         WordsTemplates::List(WordsListTemplate { words })
@@ -111,7 +112,7 @@ async fn post_words_new(
 
     // TODO: Flash success/error message on session
 
-    let words: Vec<Word> = sqlx::query_as("SELECT * FROM words")
+    let words: Vec<WordRow> = sqlx::query_as("SELECT * FROM words")
         .fetch_all(&state.pool)
         .await
         .expect("Failed to get words");

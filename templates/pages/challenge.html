@@ -12,11 +12,14 @@
       <dd>{{ challenge.definition }}</dd>
     </dl>
 
+    {% if let Some(score) = challenge.score %}
+      <p>Score: {{ score }}</p>
+    {% endif %}
     {% if let Some(answer) = challenge.answer %}
-      <p>{{ answer }}</p>
+      <p>Answer: {{ answer }}</p>
     {% endif %}
     {% if let Some(corrected) = challenge.corrected_answer %}
-      <p>{{ corrected }}</p>
+      <p>Corrected: {{ corrected }}</p>
     {% endif %}
   </section>
 {% endblock %}
