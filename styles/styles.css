@@ -1,1 +1,52 @@
+:root {
+  --bg-colour: #F9F9F9;
+  --text-colour: #333333;
+}
 
+html {
+  font-family: sans-serif;
+  font-size: 16px;
+  line-height: 1;
+
+  background-color: var(--bg-colour);
+  color: var(--text-colour);
+}
+
+body {
+  display: grid;
+  grid-template-columns: 1fr minmax(400px, 900px) 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-areas:
+    "left head right"
+    "left main right"
+    "left foot right";
+
+  max-height: 100dvh;
+}
+
+.page-header {
+  display: flex;
+  flex-direction: column;
+  grid-area: head;
+}
+
+main {
+  grid-area: main;
+}
+
+.page-footer {
+  grid-area: foot;
+}
+
+.page-header__nav {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.page-header__nav li {
+  all: unset;
+}
+
+.page-header__nav a {
+  font-size: 1.25rem;
+}
