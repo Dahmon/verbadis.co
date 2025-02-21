@@ -1,3 +1,24 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ol,
+ul {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+}
+
 :root {
   --bg-colour: #F9F9F9;
   --text-colour: #333333;
@@ -22,6 +43,7 @@ body {
     "left foot right";
 
   max-height: 100dvh;
+  line-height: 1.5;
 }
 
 .page-header {
@@ -49,4 +71,56 @@ main {
 
 .page-header__nav a {
   font-size: 1.25rem;
+}
+
+
+a {
+  color: royalblue;
+  text-decoration: underline;
+}
+
+button {
+  cursor: pointer;
+  border-color: lightgrey;
+  border-style: solid;
+  background: white;
+  font-size: 1rem;
+  padding: 2px 4px;
+  margin: 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #E1E1E1;
+}
+
+th {
+  text-align: left;
+}
+
+tbody {
+  display: block;
+  max-height: 200px;
+  overflow: scroll;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #EFEFEF;
+}
+
+tr {
+  display: grid;
+  grid-template-columns: 1fr 200px 200px;
+  grid-auto-rows: 1fr;
+}
+
+th,
+td {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
 }

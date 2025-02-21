@@ -3,8 +3,8 @@
     <tr>
       <th>Word</th>
       <th>Score</th>
-      <th>Created</th>
-      <th>Updated</th>
+      <!--<th>Created</th>
+      <th>Updated</th>-->
     </tr>
   </thead>
   <tbody>
@@ -16,8 +16,8 @@
         {{ score }}
       {% endif %}
       </td>
-      <td>{{ challenge.created_at }}</td>
-      <td>{{ challenge.updated_at }}</td>
+      <!--<td>{{ challenge.created_at }}</td>
+      <td>{{ challenge.updated_at }}</td>-->
       <td>
         <a href="/challenges/{{ challenge.id }}">View</a>
         <button hx-delete="/challenges/{{ challenge.id }}" hx-target="#challenge-list" hx-swap="outerHTML">Delete</button>
