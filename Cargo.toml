@@ -13,3 +13,7 @@ tower-http = { version = "0.6", features = ["fs"] }
 serde = { version = "1.0.217", features = ["derive"] }
 sqlx = { version = "0.8.3", features = ["sqlite", "runtime-tokio-native-tls"] }
 dotenv = "0.15.0"
+lancedb = "0.19.1"
+# Locked because chrono dep issue
+arrow-array = "=53.4.1"
+arrow = "=53.4.1"

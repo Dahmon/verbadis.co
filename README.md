@@ -17,6 +17,11 @@ also a tool I've wanted to build for a while.
 - [ ] Validate form input
 - [ ] Write tests
 
+### LanceDB
+- [ ] Implement embeddings
+  - API call for ngram
+  - Ollama call for meaning
+
 ## Bugs
 
 - After creating a Challenge and redirecting, then clicking the back button,
